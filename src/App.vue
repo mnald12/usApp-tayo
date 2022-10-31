@@ -51,6 +51,7 @@ export default {
         let check = 0
         let usr = querySnap.docs.map(doc => doc.data())
         for(let i of usr){
+          this.users = []
           if(i.userID != this.user.uid){
             this.users.push({
               name : i.name,
