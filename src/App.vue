@@ -33,7 +33,6 @@ export default {
     return {
       mode : 0,
       user : firebase.auth().currentUser,
-      auths : firebase.auth(),
       db : firebase.firestore(),
       avatar : '',
       name : '',
@@ -65,11 +64,11 @@ export default {
         }
         if(check == 0){
           let user = {
-            avatar: this.auths.currentUser.photoURL,
-            name: this.auths.currentUser.displayName,
-            userID: this.auths.currentUser.uid
+            avatar: firebase.auth().currentUser.photoURL,
+            name: firebase.auth().currentUser.displayName,
+            userID: firebase.auth().currentUser.uid
           }
-          this.db.collection('users').add(user), { merge: true }
+          firebase.firestore().collection('users').add(user), { merge: true }
         }
       })
     }
