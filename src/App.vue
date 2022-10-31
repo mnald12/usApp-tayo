@@ -51,7 +51,6 @@ export default {
         let check = 0
         let usr = querySnap.docs.map(doc => doc.data())
         for(let i of usr){
-          this.users = []
           if(i.userID != this.user.uid){
             this.users.push({
               name : i.name,
@@ -64,6 +63,7 @@ export default {
           }
         }
         if(check == 0){
+          this.users = []
           let user = {
             avatar: firebase.auth().currentUser.photoURL,
             name: firebase.auth().currentUser.displayName,
