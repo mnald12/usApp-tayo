@@ -2,8 +2,8 @@
 <div>
   <div v-if="user">
     <HeaderComponent :modes="mode" :img="avatar" :name="name" :img2="chatUser.avatar" :name2="chatUser.name" @change-mode="changeMode"/>
-    <ContactList v-if="mode == 0" @view-message="viewMess" :contacts="users"/>
-    <ChatComponent v-else :user2="chatIds" />
+    <ContactList v-if="mode == 0" @view-message="viewMess"/>
+    <ChatComponent v-else :user2="chatIds" @reset-users="resetUsers"/>
   </div>
   <div v-else>
     <LoginComponent/>
@@ -38,13 +38,14 @@ export default {
       name : '',
       users : [],
       chatUser : {},
-      chatIds : ''
+      chatIds : '',
+      w : 0
     }
   },
   mounted(){
     if(this.user){
       this.avatar = this.user.photoURL
-      this.name = this.user.displayName 
+      this.name = this.user.displayName
       this.db.collection('users')
       .orderBy('name')
       .onSnapshot(querySnap => {
@@ -63,7 +64,6 @@ export default {
           }
         }
         if(check == 0){
-          this.users = []
           let user = {
             avatar: firebase.auth().currentUser.photoURL,
             name: firebase.auth().currentUser.displayName,
@@ -87,6 +87,9 @@ export default {
     },
     changeMode(){
       this.mode = 0
+    },
+    resetUsers(){
+      this.users = []
     }
   }
 }

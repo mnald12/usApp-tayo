@@ -67,11 +67,12 @@
 	.sticky-top{
 		position: sticky;
 		top: 0;
+		opacity: 2;
 	}
 	.nav-container{
 		width: 100%;
 		height: 70px;
-		background: forestgreen;
+		background: #5e5e5e;
 		position: relative;
 		display: flex;
 		align-items: center;

@@ -18,18 +18,35 @@
 	</div>
 </template>
 <script>
+	import firebase from 'firebase/compat/app'
+	import 'firebase/compat/auth'
+	import 'firebase/compat/firestore'
 	export default{
 		name : 'ContactList',
-		props : {
-			contacts : {
-				type : Array
-			}
-		},
 		data(){
 			return{
+				user : firebase.auth().currentUser,
+				db : firebase.firestore(),
 				search : '',
-				contact : this.contacts,
+				users : []
 			}
+		},
+		mounted(){
+			this.db.collection('users')
+			.orderBy('name')
+			.onSnapshot(querySnap => {
+				this.users = []
+				let usr = querySnap.docs.map(doc => doc.data())
+				for(let i of usr){
+					if(i.userID != this.user.uid){
+						this.users.push({
+							name : i.name,
+							avatar : i.avatar,
+							uid : i.userID
+						})
+					}
+				}
+			})
 		},
 		inheritAttrs : false,
 		methods : {
@@ -39,7 +56,7 @@
 		},
 		computed : {
 			filteredList(){
-				return this.contact.filter(post => {
+				return this.users.filter(post => {
 					return post.name.toLowerCase().includes(this.search.toLowerCase())
 				})
 			}
@@ -56,6 +73,8 @@
 		position: relative;
 		display: flex;
 		align-items: center;
+		z-index: 100;
+		margin-top: 10px;
 	}
 	.lists-header h4{
 		font-size: 30px;
@@ -78,7 +97,7 @@
 		outline: none;
 		border: none;
 		background: transparent;
-		box-shadow: 0 0 3px 0 yellowgreen;
+		box-shadow: 0 0 3px 0 #4e4e4e;
 		border-radius: 20px;
 		font-size: 17px;
 	}
@@ -109,7 +128,7 @@
 		border-radius: 10px;
 	}
 	.lists .list:hover{
-		background: rgba(0, 255, 0, 0.30);
+		background: rgba(80, 80, 80, 0.30);
 	}
 	.lists .list .avatar{
 		width: 40px;
@@ -132,7 +151,7 @@
 		padding: 6px;
 	}
 	.lists .list .content-list p{
-		padding: 6px;
+		padding-left: 6px;
 	}
 	@media(max-width: 576px){
 		.lists-header h4{

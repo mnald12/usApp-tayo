@@ -102,13 +102,14 @@
 	.chat-container .message.left p{
 		width: auto;
 		max-width: 300px;
-		background: seagreen;
-		color: aliceblue;
+		background: aliceblue;
+		color: #000000;
 		padding: 10px 16px;
 		border-radius: 20px;
 		display: inline-block;
 		white-space: pre-line;
 		border-top-left-radius: 0;
+		box-shadow: -1px 2px 3px 0 #3e3e3e;
 	}
 	.chat-container .message.right{
 		justify-content: right;
@@ -116,13 +117,14 @@
 	.chat-container .message.right p{
 		width: auto;
 		max-width: 300px;
-		background: royalblue;
+		background: #3e3e3e;
 		color: aliceblue;
 		padding: 10px 16px;
 		border-radius: 20px;
 		white-space: pre-line;
 		display: inline-block;
 		border-bottom-right-radius: 0;
+		box-shadow: -1px 2px 3px 0 #3e3e3e;
 	}
 	.chat-textarea{
 		width: 100%;
@@ -132,7 +134,7 @@
 		bottom: 0;
 		display: flex;
 		align-items: center;
-		background: aliceblue;
+		background: lightgray;
 	}
 	.chat-textarea textarea{
 		width: 100%;
@@ -155,7 +157,7 @@
 		width: auto;
 		padding: 10px;
 		height: 40px;
-		color: green;
+		color: #3e3e3e;
 		background: aliceblue;
 		border-radius: 3px;
 		border: none;
@@ -169,8 +171,8 @@
 		transition: 0.60s;
 	}
 	.chat-textarea button:hover{
-		background: green;
-		color: white;
+		background: #3e3e3e;
+		color: aliceblue;
 	}
 	.chat-textarea button svg{
 		margin-left: 6px;
