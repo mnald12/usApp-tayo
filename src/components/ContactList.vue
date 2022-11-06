@@ -250,13 +250,11 @@
 		right: 10px;
 		top: 8px;
 		margin: 0;
-		padding: 8px;
 		background: #2e2e2e;
 		border-radius: 5px;
 		text-align: left;
 		overflow-y: auto;
-		border-bottom: 5px solid #2e2e2e;
-		border-top: 5px solid #2e2e2e;
+		border: 8px solid #2e2e2e;
 	}
 	.notif-displayer::-webkit-scrollbar{
 		width: 4px;
@@ -335,12 +333,16 @@
 		overflow: hidden;
 	}
 	@media(max-width: 576px){
+		.lists-header{
+			padding: 20px 10px;
+		}
 		.lists-header h4{
-			font-size: 22px;
+			font-size: 15px;
+			display: none;
 		}
 		.lists-header .search-bar input{
 			font-size: 16px;
-			width: 180px;
+			width: 200px;
 			height: 30px;
 			padding: 8px 20px 8px 10px;
 		}
