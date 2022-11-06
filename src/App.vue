@@ -1,7 +1,7 @@
 <template>
 <div>
   <div v-if="user">
-    <HeaderComponent :modes="mode" :img="avatar" :name="name" :img2="chatUser.avatar" :name2="chatUser.name" @change-mode="changeMode"/>
+    <HeaderComponent :modes="mode" :img="avatar" :name="name" :img2="chatUser.avatar" :name2="chatUser.name" :status="chatUser.status" @change-mode="changeMode"/>
     <ContactList v-if="mode == 0" @view-message="viewMess"/>
     <ChatComponent v-else :user2="chatIds" @reset-users="resetUsers"/>
   </div>
@@ -20,6 +20,7 @@ import LoginComponent from './components/LoginComponent.vue'
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import 'firebase/compat/firestore'
+import { doc, updateDoc } from "firebase/firestore"
 
 export default {
   name: 'App',
@@ -56,18 +57,35 @@ export default {
             this.users.push({
               name : i.name,
               avatar : i.avatar,
-              uid : i.userID
+              uid : i.userID,
+              status : i.status
             })
           }
           if(i.userID == this.user.uid){
             check++
+            this.db.collection('users')
+            .onSnapshot(querySnap => {
+              let usr = querySnap.docs.map(doci => doci.id)
+              for(let j of usr){
+                this.db.collection('users').doc(j).onSnapshot(u => {
+                  let d = u.data()
+                  if(d.userID == this.user.uid){
+                    const updateStat = doc(this.db, "users", j)
+                    updateDoc(updateStat, {
+                      status: 'online'
+                    });
+                  }
+                })
+              }
+            })
           }
         }
         if(check == 0){
           let user = {
-            avatar: firebase.auth().currentUser.photoURL,
-            name: firebase.auth().currentUser.displayName,
-            userID: firebase.auth().currentUser.uid
+            avatar : firebase.auth().currentUser.photoURL,
+            name : firebase.auth().currentUser.displayName,
+            userID : firebase.auth().currentUser.uid,
+            status : 'online'
           }
           firebase.firestore().collection('users').add(user), { merge: true }
         }

@@ -16,7 +16,7 @@
 			<span class="avatar">
 				<img :src="img2">
 			</span>
-			<h3>{{name2}}</h3>
+			<h3>{{name2}}<span :class="stats(status)"></span></h3>
 		</div>
 		<div class="nav-action">
 			<button @click="returns"><span class="backSpan">Back</span> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"/></svg></button>
@@ -29,6 +29,7 @@
 	import firebase from 'firebase/compat/app'
 	import 'firebase/compat/auth'
 	import 'firebase/compat/firestore'
+	import { doc, updateDoc } from "firebase/firestore"
 	export default{
 		name : 'HeaderComponent',
 		props : {
@@ -52,12 +53,44 @@
 				type : String,
 				default : ''
 			},
+			status : {
+				type : String,
+				default : ''
+			}
+		},
+		data(){
+			return{
+				user : firebase.auth().currentUser,
+				db : firebase.firestore(),
+				userid : ''
+			}
 		},
 		methods : {
 			returns(){
 				this.$emit('change-mode')
 			},
+			stats(s){
+				if(s == 'online') return 'on'
+				else return 'off'
+			},
 			logOut(){
+
+				this.db.collection('users')
+				.onSnapshot(querySnap => {
+					let usr = querySnap.docs.map(doci => doci.id)
+					for(let i of usr){
+						this.db.collection('users').doc(i).onSnapshot(u => {
+							let d = u.data()
+							if(d.userID == this.user.uid){
+								const updateStat = doc(this.db, "users", i)
+								updateDoc(updateStat, {
+									status: 'offline'
+								});
+							}
+						})
+					}
+				})
+
 				firebase.auth().signOut()
 			}
 		}
@@ -102,6 +135,20 @@
 		font-size: 26px;
 		color: aliceblue;
 		margin-left: 10px;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+	.nav-container .nav-name h3 span{
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+	}
+	.nav-container .nav-name h3 span.on{
+		background: yellowgreen;
+	}
+	.nav-container .nav-name h3 span.off{
+		background: gray;
 	}
 	.nav-container .nav-action{
 		width: auto;

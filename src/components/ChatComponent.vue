@@ -1,7 +1,7 @@
 <template :style="{position : relative}">
 	<div class="chat-container" id="cc">
-		<div v-for="(mess, i) in messages" :class="['message', sentOrReceived(mess.from)]" :key="i">
-			<p :title="mess.date">{{mess.msg}}</p>
+		<div v-for="(mess, i) in messages" :class="['message', leftOrRight(mess.from)]" :key="i">
+			<p :id="i" :title="mess.date + ' click to copy' " @click="copyText(i, leftOrRight(mess.from))">{{mess.msg}}</p>
 		</div>
 	</div>
 	<div ref="scrollable"></div>
@@ -28,11 +28,12 @@
 				db : firebase.firestore(),
 				message : '',
 				messages : [],
-				chatUser : this.user2
+				chatUser : this.user2,
+				notif : []
 			}
 		},
 		methods : {
-			sentOrReceived(msgfrm){
+			leftOrRight(msgfrm){
 				if(msgfrm == this.user.uid){
 					return 'right'
 				}
@@ -53,6 +54,16 @@
 			},
 			scrlDwn(){
 				this.$refs['scrollable'].scrollIntoView({ behavior: 'smooth' })
+			},
+			copyText(id, cls){
+				let panel = document.getElementById(id)
+				navigator.clipboard.writeText(panel.innerText)
+				panel.style.color = 'green'
+				let clears = setInterval(() => {
+					if(cls == 'right') panel.style.color = 'aliceblue'
+					else panel.style.color = '#000000'
+					clearInterval(clears)
+				}, 1000)
 			}
 		},
 		inheritAttrs : false,
@@ -90,7 +101,7 @@
 	.chat-container .message{
 		width: 100%;
 		height: auto;
-		padding: 6px;
+		padding: 3px;
 		margin: 0;
 		border-radius: 3px;
 		text-align: left;
@@ -110,6 +121,7 @@
 		white-space: pre-line;
 		border-top-left-radius: 0;
 		box-shadow: -1px 2px 3px 0 #3e3e3e;
+		cursor: pointer;
 	}
 	.chat-container .message.right{
 		justify-content: right;
@@ -125,6 +137,7 @@
 		display: inline-block;
 		border-bottom-right-radius: 0;
 		box-shadow: -1px 2px 3px 0 #3e3e3e;
+		cursor: pointer;
 	}
 	.chat-textarea{
 		width: 100%;
@@ -179,7 +192,7 @@
 	}
 	@media (max-width: 576px){
 		.chat-container .message{
-			padding: 6px;
+			padding: 3px;
 		}
 		.chat-textarea button{
 			right: 20px;
